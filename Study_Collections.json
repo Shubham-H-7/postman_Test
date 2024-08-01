@@ -140,7 +140,31 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"pm.test(\"Validating status code 200 OK\", ()=>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validating response time below 500\", ()=>{\r",
+							"pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validating response body\", ()=>{\r",
+							"var data=pm.response.json();\r",
+							"pm.expect(data).to.have.property(\"name\")\r",
+							"pm.expect(data).to.has.property(\"email\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validating headers\", ()=>{\r",
+							"    var contentType = pm.response.headers.get(\"Content-Type\").split(\";\")[0];\r",
+							"    pm.expect(contentType).to.eql(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validating Env's var\", ()=>{\r",
+							"var id = pm.environment.get(\"name\");\r",
+							"var dt=pm.response.json();\r",
+							"var nam = dt.name\r",
+							"pm.expect(nam).is.eql(id)\r",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -183,7 +207,18 @@
 						"exec": [
 							"pm.test(\"Status code is 204\", function () {",
 							"    pm.response.to.have.status(204);",
-							"});"
+							"});",
+							"pm.environment.unset(\"user_id\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
